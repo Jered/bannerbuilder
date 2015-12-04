@@ -31,7 +31,7 @@ if (typeof Ad === "undefined") {
 			// define the animation
 			tl.from(txt1, 0.5, {opacity:0})
 			  .to(txt1, 0.5, {opacity:0}, '+=2')
-			  .from(txt2, 0.5, {opacity:0})
+			  .from(txt2, 0.5, {opacity:0}, '+=0.5')
 			  .from(cta, 0.5, {opacity:0}, '+=1');
     	}
     };

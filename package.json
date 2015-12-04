@@ -7,6 +7,10 @@
     "build": "gulp build",
     "zip": "gulp zip"
   },
+  "meta": {
+    "client": "Client",
+    "campaign": "Campaign"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Jered/bannerbuilder.git"

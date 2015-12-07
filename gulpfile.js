@@ -13,6 +13,9 @@ var wait = require('gulp-wait');
 var replace = require('gulp-replace');
 var argv = require('yargs').argv;
 
+var browserSync = require('browser-sync').create();
+var reload = browserSync.reload;
+
 function getFolders(dir) {
     return fs.readdirSync(dir)
       .filter(function(file) {
@@ -169,4 +172,32 @@ gulp.task('zip', ['build'], function (callback) {
 	}
 
 	return merged;
+});
+
+// Development-optimized workflow with browsersync
+// Clean/build first, then serve and watch
+gulp.task('serve', ['build'], function () {
+  browserSync.init({
+    server: './dev',
+    directory: true
+  });
+
+  // If changes are made to global or variant html, js or css, or background
+  // images which don't require re-making sprites, rebuild everything and reload
+  // the browser
+  gulp.watch(
+    ['src/global/styles/*.css',
+    'src/global/scripts/vendors/**/*.js',
+    'src/variants/**/*.html',
+    'src/variants/**/*.js',
+    'src/variants/**/*.css',
+    'src/variants/**/background.jpg'],
+        ['build', reload]);
+
+  // If sprites are updated, remake them and reload the page
+  gulp.watch(
+    ['src/variants/**/sprites/*.png',
+    'src/variants/**/sprites/*.jpg',
+    'src/variants/**/sprites/*.gif'],
+        ['makesprites', reload]);
 });

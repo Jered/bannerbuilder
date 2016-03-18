@@ -12,12 +12,12 @@ Copy or fork the repo.
 
 ## Install Node.JS and its packages:
 
-> *OSX Users Please Read*
-> You'll need to setup your Node install correctly so you do not use sudo. Please see this guide [http://www.johnpapa.net/how-to-use-npm-global-without-sudo-on-osx/] before proceeding or you will not be able to run without sudo commands. It uses Homebrew to install Node which is a superior method
+> *OSX Users Please Read*  
+> You'll need to setup your Node install correctly so you do not use sudo. Please see [this guide](http://michael-kuehnel.de/node.js/2015/09/08/using-vm-to-switch-node-versions.html) before proceeding or you will not be able to run without `sudo` commands. It uses NVM to install and manage Node.
 
-- Download and install **node.js** from [nodejs.org]. This will be a .pkg for OSX or .msi for Windows.
-- Run ``npm install gulp -g`` to install **gulp.js** (the build system)
-- Run ``npm install`` to install all the project dependencies (node packages)
+- Install node using the above method
+- Run `npm install gulp -g` to install **gulp.js** (the build system)
+- Run `npm install` to install all the project dependencies (node packages)
 
 ## Setup a variation and size
 
@@ -50,7 +50,7 @@ Setup at least one variation and size. Don't worry, you can add as many as want 
 
 - Node.js
 - Gulp.js (automation)
-- [Greensock Animation Library](http://greensock.com/gsap) 
+- [Greensock Animation Library](http://greensock.com/gsap)
 
 ## Directory Structure
 
@@ -84,7 +84,7 @@ The following are folders created when the environment is setup and/or gulp comm
 
 ## Variations
 
-The variations of a similar set of banners. For example, the concept is essentially the same but may have different content. Each variation is named uniquely. 
+The variations of a similar set of banners. For example, the concept is essentially the same but may have different content. Each variation is named uniquely.
 
 ## Sizes
 

@@ -3,7 +3,6 @@ var pkg = require('./package.json');
 var fs = require('fs');
 var path = require('path');
 var merge = require('merge-stream');
-var rename = require('gulp-rename');
 var filesize = require('gulp-size');
 var inject = require('gulp-inject');
 var concat = require('gulp-concat');
@@ -14,10 +13,10 @@ var replace = require('gulp-replace');
 var eslint = require('gulp-eslint');
 
 function getFolders(dir) {
-    return fs.readdirSync(dir)
-      .filter(function(file) {
-        return fs.statSync(path.join(dir, file)).isDirectory();
-      });
+  return fs.readdirSync(dir)
+    .filter(function(file) {
+      return fs.statSync(path.join(dir, file)).isDirectory();
+    });
 }
 
 function makesprite(variant, size) {
@@ -27,17 +26,17 @@ function makesprite(variant, size) {
 
   var spriteData = gulp.src(origin + 'assets/sprites/*.*') // source path of the sprite images
   .pipe(spritesmith({
-        imgName: 'txtsprite.png',
-        imgPath: 'assets/txtsprite.png',
-        cssName: 'txtsprite.css',
-        padding: 1
+    imgName: 'txtsprite.png',
+    imgPath: 'assets/txtsprite.png',
+    cssName: 'txtsprite.css',
+    padding: 1
   }));
 
-    spriteData.css.pipe(gulp.dest(dest)); // output path for the CSS
+  spriteData.css.pipe(gulp.dest(dest)); // output path for the CSS
 
-    var imgStream = spriteData.img
-      .pipe(imagemin()) // compress PNG
-      .pipe(gulp.dest(dest + 'assets/')); // output path for the sprite
+  spriteData.img
+    .pipe(imagemin()) // compress PNG
+    .pipe(gulp.dest(dest + 'assets/')); // output path for the sprite
 }
 
 gulp.task('default', function() {
@@ -54,20 +53,20 @@ gulp.task('clean', function (callback) {
 
 // lints the js files for errors
 gulp.task('lint', function () {
-    // ESLint ignores files with "node_modules" paths.
-    // So, it's best to have gulp ignore the directory as well.
-    // Also, Be sure to return the stream from the task;
-    // Otherwise, the task may end before the stream has finished.
-    return gulp.src(['src/**/*.js'])
-        // eslint() attaches the lint output to the "eslint" property
-        // of the file object so it can be used by other modules.
-        .pipe(eslint())
-        // eslint.format() outputs the lint results to the console.
-        // Alternatively use eslint.formatEach() (see Docs).
-        .pipe(eslint.format())
-        // To have the process exit with an error code (1) on
-        // lint error, return the stream and pipe to failAfterError last.
-        .pipe(eslint.failAfterError());
+  // ESLint ignores files with "node_modules" paths.
+  // So, it's best to have gulp ignore the directory as well.
+  // Also, Be sure to return the stream from the task;
+  // Otherwise, the task may end before the stream has finished.
+  return gulp.src(['src/**/*.js'])
+      // eslint() attaches the lint output to the "eslint" property
+      // of the file object so it can be used by other modules.
+      .pipe(eslint())
+      // eslint.format() outputs the lint results to the console.
+      // Alternatively use eslint.formatEach() (see Docs).
+      .pipe(eslint.format())
+      // To have the process exit with an error code (1) on
+      // lint error, return the stream and pipe to failAfterError last.
+      .pipe(eslint.failAfterError());
 });
 
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
@@ -116,8 +115,8 @@ gulp.task('build', ['clean', 'lint'], function (callback) {
       var merged = merge();
 
       // move images
-      var imageStream = gulp.src(['src/global/assets/**', origin + 'assets/**', '!' + origin + 'assets/sprites/', '!' + origin + 'assets/sprites/**'])
-        .pipe(gulp.dest(dest + 'assets/'))
+      gulp.src(['src/global/assets/**', origin + 'assets/**', '!' + origin + 'assets/sprites/', '!' + origin + 'assets/sprites/**'])
+        .pipe(gulp.dest(dest + 'assets/'));
 
       // concat the styles
       var styleStream = gulp.src(['src/global/styles/*.css', origin + '*.css'])
@@ -137,7 +136,7 @@ gulp.task('build', ['clean', 'lint'], function (callback) {
       .pipe ( replace('{{author}}', pkg.author))
       .pipe ( replace('{{description}}', pkg.description))
       .pipe ( replace('{{version}}', pkg.version))
-      .pipe ( replace('{{title}}', pkg.meta.client + " " + pkg.meta.campaign + " | " + variant + " | " + size + " | " + pkg.version))
+      .pipe ( replace('{{title}}', pkg.meta.client + ' ' + pkg.meta.campaign + ' | ' + variant + ' | ' + size + ' | ' + pkg.version))
       .pipe ( replace('{{width}}', size.substring(0,size.indexOf('x'))))
       .pipe ( replace('{{height}}', size.substring(size.indexOf('x')+1, size.length)))
       .pipe ( gulp.dest(dest))
@@ -167,7 +166,7 @@ gulp.task('zip', ['build'], function (callback) {
     for (var j=0, sl=sizes.length; j < sl; j++) {
       var size = sizes[j];
       var folder = 'dev/' + variant + '/' + size + '/';
-      var filename = pkg.meta.client + ' ' + pkg.meta.campaign + " " + variant + " " + size + " v" + pkg.version + ".zip";
+      var filename = pkg.meta.client + ' ' + pkg.meta.campaign + ' ' + variant + ' ' + size + ' v' + pkg.version + '.zip';
 
       //console.info(filename);
 

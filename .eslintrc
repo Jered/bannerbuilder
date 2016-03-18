@@ -15,10 +15,13 @@
         "semi": [
             2,
             "always"
-        ]
+        ],
+        "no-console": 0,
+        "no-unused-vars": 1,
     },
     "env": {
-        "browser": true
+        "browser": true,
+        "node": true
     },
     "extends": "eslint:recommended"
 }

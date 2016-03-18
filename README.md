@@ -66,7 +66,7 @@ The following are the folders in the repository. Note that the structure and fol
     - **global**: global source files used in all banners
     - **variants**: banner variants
         + **sizes**: each variant banner size
-            * ***.html**: banner HTML file
+            * **.html**: banner HTML file
             * **screen.css**: banner CSS
             * **txtsprite.css**: spritesheet CSS created by `gulp makesprites`
             * **ad.js**: JavaScript file

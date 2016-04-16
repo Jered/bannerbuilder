@@ -25,24 +25,26 @@
   ],
   "author": "Jered Cuenco",
   "contributors": [
-    "Barry Admundson"
+    "Barry Admundson",
+    "Ashlin Aronin"
   ],
   "license": "MIT",
   "homepage": "https://github.com/Jered/bannerbuilder/blob/master/README.md",
   "devDependencies": {
+    "del": "^2.2.0",
+    "eslint": "^2.4.0",
     "browser-sync": "^2.10.0",
-    "del": "^1.2.0",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
+    "gulp-eslint": "^2.0.0",
     "gulp-imagemin": "^2.3.0",
-    "gulp-inject": "^1.5.0",
-    "gulp-rename": "^1.2.0",
+    "gulp-inject": "^3.0.0",
     "gulp-replace": "^0.5.4",
-    "gulp-size": "^1.2.3",
+    "gulp-size": "^2.1.0",
     "gulp-wait": "0.0.2",
     "gulp-zip": "^3.0.0",
-    "gulp.spritesmith": "^4.0.0",
-    "merge-stream": "^0.1.8",
-    "yargs": "^3.30.0"
+    "gulp.spritesmith": "^6.2.0",
+    "merge-stream": "^1.0.0",
+    "yargs": "^4.3.1"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "bannerbuilder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "NPM/Gulp based banner build setup that allows for easy build of similar HTML banners by variation and size",
   "scripts": {
     "clean": "gulp clean",
@@ -31,10 +31,11 @@
   "license": "MIT",
   "homepage": "https://github.com/Jered/bannerbuilder/blob/master/README.md",
   "devDependencies": {
+    "chalk": "^1.1.1",
     "del": "^2.2.0",
     "eslint": "^2.4.0",
+    "gulp": "^3.9.1",
     "browser-sync": "^2.10.0",
-    "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-eslint": "^2.0.0",
     "gulp-imagemin": "^2.3.0",
@@ -45,6 +46,7 @@
     "gulp-zip": "^3.0.0",
     "gulp.spritesmith": "^6.2.0",
     "merge-stream": "^1.0.0",
+    "vinyl-buffer": "^1.0.0",
     "yargs": "^4.3.1"
   }
 }

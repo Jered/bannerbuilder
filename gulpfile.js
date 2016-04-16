@@ -3,7 +3,6 @@ var pkg = require('./package.json');
 var fs = require('fs');
 var path = require('path');
 var merge = require('merge-stream');
-var rename = require('gulp-rename');
 var filesize = require('gulp-size');
 var inject = require('gulp-inject');
 var concat = require('gulp-concat');
@@ -13,6 +12,14 @@ var wait = require('gulp-wait');
 var replace = require('gulp-replace');
 var argv = require('yargs').argv;
 var eslint = require('gulp-eslint');
+var del = require('del');
+var buffer = require('vinyl-buffer');
+var chalk = require('chalk');
+
+// Console Colors
+// var cErr = chalk.bold.red;
+var cInfo = chalk.dim.gray;
+var cTask = chalk.bold.green;
 
 var browserSync = require('browser-sync').create();
 var reload = browserSync.reload;
@@ -40,20 +47,22 @@ function makesprite(variant, size) {
   spriteData.css.pipe(gulp.dest(dest)); // output path for the CSS
 
   spriteData.img
+    .pipe(buffer())
     .pipe(imagemin()) // compress PNG
     .pipe(gulp.dest(dest + 'assets/')); // output path for the sprite
 }
 
 gulp.task('default', function() {
   // place code for your default task here
-  console.info('version: ' + pkg.version);
+  console.info(cInfo('version: '), pkg.version);
 });
 
 // Cleans the dist and dev folders
-gulp.task('clean', function (callback) {
-  var del = require('del');
-
-  del(['dist/**/*', 'dev/**/*'],callback);
+gulp.task('clean', function () {
+  return del(['dist/**/*', 'dev/**/*'])
+    .then(function(paths) {
+      console.log(cTask('Cleaning...\n'), cInfo(paths.join('\n ')));
+    });
 });
 
 // lints the js files for errors
@@ -97,19 +106,9 @@ gulp.task('makesprites', function() {
   }
 });
 
-/*// create sprites for tablet version of susan variant only
-gulp.task('makesusantabletsprites', function() {
-  makesprite('susan','tablet');
-});
-
-// create sprites for tablet version of thomas variant only
-gulp.task('makethomastabletsprites', function() {
-  makesprite('thomas','tablet');
-});
-*/
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
 // builds the src files into the dev folder. Concats JS and css
-gulp.task('build', ['clean', 'lint'], function (callback) {
+gulp.task('build', ['clean','lint'], function () {
   var variants = getFolders('src/variants/');
   var fullmerge = merge();
 
@@ -163,7 +162,7 @@ gulp.task('build', ['clean', 'lint'], function (callback) {
 
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
 // create zips per size for each variant and place in the dist folder
-gulp.task('zip', ['build'], function (callback) {
+gulp.task('zip', ['build'], function () {
   var zip = require('gulp-zip'); // zip files
   // var date = new Date().toISOString().replace(/[^0-9]/g, '');
   var merged = merge();
@@ -218,5 +217,5 @@ gulp.task('serve', ['build'], function () {
     ['src/variants/**/sprites/*.png',
     'src/variants/**/sprites/*.jpg',
     'src/variants/**/sprites/*.gif'],
-        ['makesprites', reload]);
+        ['makesprites', reload]); // TODO: This is brute force. Should target only changed directories.
 });

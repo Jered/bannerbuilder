@@ -3,7 +3,6 @@ var pkg = require('./package.json');
 var fs = require('fs');
 var path = require('path');
 var merge = require('merge-stream');
-var rename = require('gulp-rename');
 var filesize = require('gulp-size');
 var inject = require('gulp-inject');
 var concat = require('gulp-concat');
@@ -218,5 +217,5 @@ gulp.task('serve', ['build'], function () {
     ['src/variants/**/sprites/*.png',
     'src/variants/**/sprites/*.jpg',
     'src/variants/**/sprites/*.gif'],
-        ['makesprites', reload]);
+        ['makesprites', reload]); // TODO: This is brute force. Should target only changed directories.
 });

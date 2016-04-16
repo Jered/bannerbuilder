@@ -3,6 +3,7 @@ var pkg = require('./package.json');
 var fs = require('fs');
 var path = require('path');
 var merge = require('merge-stream');
+var rename = require('gulp-rename');
 var filesize = require('gulp-size');
 var inject = require('gulp-inject');
 var concat = require('gulp-concat');
@@ -10,6 +11,7 @@ var spritesmith = require('gulp.spritesmith');
 var imagemin = require('gulp-imagemin');
 var wait = require('gulp-wait');
 var replace = require('gulp-replace');
+var argv = require('yargs').argv;
 var eslint = require('gulp-eslint');
 var del = require('del');
 var buffer = require('vinyl-buffer');
@@ -19,6 +21,9 @@ var chalk = require('chalk');
 // var cErr = chalk.bold.red;
 var cInfo = chalk.dim.gray;
 var cTask = chalk.bold.green;
+
+var browserSync = require('browser-sync').create();
+var reload = browserSync.reload;
 
 function getFolders(dir) {
   return fs.readdirSync(dir)
@@ -79,14 +84,19 @@ gulp.task('lint', function () {
       .pipe(eslint.failAfterError());
 });
 
-// take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
-// create sprites
+/** take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
+  you can pass arguments on the command line -v to specify a single variant and -s to specify a single size. These
+  arguments can be used together or seperately
+  @param -v [variant folder name] (optional)
+	@param -s [size folder name] (optional)
+	@usage gulp makesprites -v myvariant -s mysize
+**/
 gulp.task('makesprites', function() {
-  var variants = getFolders('src/variants/');
+  var variants = (argv.v === undefined) ? getFolders('src/variants/') : [argv.v];
 
   for (var i=0, vl=variants.length; i < vl; i++) {
     var variant = variants[i];
-    var sizes = getFolders('src/variants/' + variant);
+    var sizes = (argv.s === undefined) ? getFolders('src/variants/' + variant): [argv.s];
 
     for (var j=0, sl=sizes.length; j < sl; j++) {
       var size = sizes[j];
@@ -125,7 +135,7 @@ gulp.task('build', ['clean','lint'], function () {
       merged.add(styleStream);
 
       // concat the javascript
-      var scriptStream = gulp.src(['src/global/scripts/vendors/**/*.js', origin + '*.js'])
+      var scriptStream = gulp.src(['src/global/scripts/**/*.js', origin + '*.js'])
         .pipe(concat('scripts.min.js'))
         .pipe(gulp.dest(dest));
       merged.add(scriptStream);
@@ -154,7 +164,7 @@ gulp.task('build', ['clean','lint'], function () {
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
 // create zips per size for each variant and place in the dist folder
 gulp.task('zip', ['build'], function () {
-  var zip = require('gulp-zip');          // zip files
+  var zip = require('gulp-zip'); // zip files
   // var date = new Date().toISOString().replace(/[^0-9]/g, '');
   var merged = merge();
   var variants = getFolders('dev/');
@@ -181,4 +191,32 @@ gulp.task('zip', ['build'], function () {
   }
 
   return merged;
+});
+
+// Development-optimized workflow with browsersync
+// Clean/build first, then serve and watch
+gulp.task('serve', ['build'], function () {
+  browserSync.init({
+    server: './dev',
+    directory: true
+  });
+
+  // If changes are made to global or variant html, js or css, or background
+  // images which don't require re-making sprites, rebuild everything and reload
+  // the browser
+  gulp.watch(
+    ['src/global/styles/*.css',
+    'src/global/scripts/vendors/**/*.js',
+    'src/variants/**/*.html',
+    'src/variants/**/*.js',
+    'src/variants/**/*.css',
+    'src/variants/**/background.jpg'],
+        ['build', reload]);
+
+  // If sprites are updated, remake them and reload the page
+  gulp.watch(
+    ['src/variants/**/sprites/*.png',
+    'src/variants/**/sprites/*.jpg',
+    'src/variants/**/sprites/*.gif'],
+        ['makesprites', reload]);
 });

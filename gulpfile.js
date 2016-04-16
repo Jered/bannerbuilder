@@ -67,6 +67,7 @@ gulp.task('clean', function () {
 
 // lints the js files for errors
 gulp.task('lint', function () {
+  console.log(cTask('Linting files...'));
   // ESLint ignores files with "node_modules" paths.
   // So, it's best to have gulp ignore the directory as well.
   // Also, Be sure to return the stream from the task;
@@ -91,6 +92,8 @@ gulp.task('lint', function () {
 	@usage gulp makesprites -v myvariant -s mysize
 **/
 gulp.task('makesprites', function() {
+  console.log(cTask('Making sprite sheets...'));
+  console.log(cInfo('variant'), argv.v, cInfo(', size'), argv.s);
   var variants = (argv.v === undefined) ? getFolders('src/variants/') : [argv.v];
 
   for (var i=0, vl=variants.length; i < vl; i++) {
@@ -109,6 +112,8 @@ gulp.task('makesprites', function() {
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
 // builds the src files into the dev folder. Concats JS and css
 gulp.task('build', ['clean','lint'], function () {
+  console.log(cTask('Building Banners...'));
+
   var variants = getFolders('src/variants/');
   var fullmerge = merge();
 
@@ -163,6 +168,7 @@ gulp.task('build', ['clean','lint'], function () {
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
 // create zips per size for each variant and place in the dist folder
 gulp.task('zip', ['build'], function () {
+  console.log(cTask('Zipping Banners'));
   var zip = require('gulp-zip'); // zip files
   // var date = new Date().toISOString().replace(/[^0-9]/g, '');
   var merged = merge();
@@ -192,9 +198,14 @@ gulp.task('zip', ['build'], function () {
   return merged;
 });
 
-// Development-optimized workflow with browsersync
-// Clean/build first, then serve and watch
+/** Development-optimized workflow with browsersync
+  Clean/build first, then serve and watch
+  Does not pickup changes to sprite folders these must be updated manually to create new sprites
+	@usage gulp serve
+**/
 gulp.task('serve', ['build'], function () {
+  console.log(cTask('Browser Sync ...'));
+
   browserSync.init({
     server: './dev',
     directory: true
@@ -205,17 +216,20 @@ gulp.task('serve', ['build'], function () {
   // the browser
   gulp.watch(
     ['src/global/styles/*.css',
-    'src/global/scripts/vendors/**/*.js',
+    'src/global/scripts/**/*.js',
     'src/variants/**/*.html',
     'src/variants/**/*.js',
     'src/variants/**/*.css',
-    'src/variants/**/background.jpg'],
+    'src/variants/**/assets/*.jpg',
+    'src/variants/**/assets/*.png',
+    'src/variants/**/assets/*.gif'],
         ['build', reload]);
 
-  // If sprites are updated, remake them and reload the page
-  gulp.watch(
-    ['src/variants/**/sprites/*.png',
-    'src/variants/**/sprites/*.jpg',
-    'src/variants/**/sprites/*.gif'],
-        ['makesprites', reload]); // TODO: This is brute force. Should target only changed directories.
+  // DEPRECATED UNTIL A MORE ELEGANT SOLUTION. THIS TRIGGERS MULTIPLE BUILD AND RELOADS
+  // // If sprites are updated, remake them and reload the page
+  // gulp.watch(
+  //   ['src/variants/**/sprites/*.png',
+  //   'src/variants/**/sprites/*.jpg',
+  //   'src/variants/**/sprites/*.gif'],
+  //       ['makesprites']); // TODO: This is brute force. Should target only changed directories.
 });

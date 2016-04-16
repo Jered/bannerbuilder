@@ -97,16 +97,6 @@ gulp.task('makesprites', function() {
   }
 });
 
-/*// create sprites for tablet version of susan variant only
-gulp.task('makesusantabletsprites', function() {
-  makesprite('susan','tablet');
-});
-
-// create sprites for tablet version of thomas variant only
-gulp.task('makethomastabletsprites', function() {
-  makesprite('thomas','tablet');
-});
-*/
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
 // builds the src files into the dev folder. Concats JS and css
 gulp.task('build', ['clean','lint'], function () {

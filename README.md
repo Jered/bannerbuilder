@@ -1,14 +1,44 @@
 # BannerBuilder
 
+[![GitHub version](https://badge.fury.io/gh/Jered%2Fbannerbuilder.svg)](https://badge.fury.io/gh/Jered%2Fbannerbuilder)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
 NPM/Gulp based banner build setup that allows for easy build of similar HTML banners by variation and size
 
+# Banner Guidelines
+
+## Variations
+
+The variations of a similar set of banners. For example, the concept is essentially the same but may have different content. Each variation is named uniquely.
+
+## Sizes
+
+Sizes can be named whatever you like but it's easiest to just use the dimensions. Here's some common IAB sizes below.
+
+- 120x600 "skyscraper"
+- 160x600 "wide skyscraper"
+- 200x200 "small square"
+- 300x250 "medium rectangle"
+- 300x600 "half page"
+- 728x90 "leaderboard"
+
+## Publisher Specifications
+
+The rules for HTML banners are in constant flux so consult your publisher requirements for the rules that apply to your banners. Below are a few typical rules for HTML5 banners.
+
+1. No more than 10-15 total files per banner inclusive of all HTML, CSS, JavaScript, and other assets when zipped. Exclusive of backup image. See publisher specs for specifics.
+2. Keep to `150kb-200kb` per banner zipped depending on publisher specs.
+3. ~~All code, fonts, and images must be self-contained within the banner.~~ Approved shared libraries do not count against total size. Typically [Google Fonts](https://www.google.com/fonts) and [Greensock  Animation Library](http://greensock.com/gsap) are both exempted. See [IAB Guidelines](http://www.iab.com/guidelines/universal-ad-package/). All other code and assets must be under the file size and part of the zip package.
+
+## No JavaScript Fallback
+
+`<noscript>` is not commonly implemented directly into the build files. Most publishers handle this on their side and only a separate image is required. Other publisher's require the fallback to occur within the ad unit's code. Consult your publisher specs.
+
+## Fonts
+
+It would make a ton of sense to use a service like Google Fonts or include a lightweight set in the banner. By experience designers rarely want to do this and like to use fonts you've never heard of. As an alternative, all text from a design may be exported as transparent PNGs and put into a spritesheet created with the `gulp makesprites` directive. Try using Google Fonts first since most publishers do not count common CDN files against the banner file size.
+
 # Quickstart
-
-## Start with this repo as a baseline
-
-Copy or fork the repo.
 
 ## Install Node.JS and its packages:
 
@@ -19,14 +49,11 @@ Copy or fork the repo.
 - Run `npm install gulp -g` to install **gulp.js** (the build system)
 - Run `npm install` to install all the project dependencies (node packages)
 
-## Setup a variation and size
-
-Setup at least one variation and size. Don't worry, you can add as many as want anytime. A starter banner is included in this repo.
-
 ## Command line tasks
 
 - `gulp`: will run the default task which will tell you what the current package version is
 - `gulp clean`: clears the **/dist** and **/dev** folders wiping out all build and distribution
+- `gulp lint`: runs eslint JavaScript linter
 - `gulp makesprites`: Creates sprites found in the assets/sprites folder of the target variant(s) and size(s) and assemble all images found for each into a single sprite
     + sprite image will be placed in the variant size's **assets** folder named txtsprite.png and will be automatically image optimized.
     + sprite CSS will be placed in the variant size's folder named txtsprite.css
@@ -36,12 +63,12 @@ Setup at least one variation and size. Don't worry, you can add as many as want 
         - example: `gulp makesprites -v ad1 -s 300x250` will target only the 300x250 size of the 'ad1' variant of the path src/ad1/300x250
 - `gulp build`: Will create a build of each variant size and place them in the **/dev** folder performing the following:
     + `gulp clean`
+    + `gulp lint`
     + concat all CSS and reference result file in HTML file
-    + concat all JS and referenc result file in HTML file
+    + concat all JS and reference result file in HTML file
     + copy all assets except **assets/sprites** folder
     + copy HTML file
 - `gulp zip`: Will create the distribution files ready for publishing. Does the following:
-    + `gulp clean`
     + `gulp build`
     + zips up each variant size
     + places zips in **/dist** folder
@@ -79,37 +106,3 @@ The following are folders created when the environment is setup and/or gulp comm
 - **dev**: compiled banners for debugging and preview. Created with `gulp build`
 - **dist**: zipped banners for distribution. Created with `gulp zip`
 - **node_modules**: Node.js modules from `npm install`
-
-# Banner Guidelines
-
-## Variations
-
-The variations of a similar set of banners. For example, the concept is essentially the same but may have different content. Each variation is named uniquely.
-
-## Sizes
-
-Sizes can be named whatever you like but it's easiest to just use the dimensions. Here's some common IAB sizes below.
-
-- 120x600 "skyscraper"
-- 160x600 "wide skyscraper"
-- 200x200 "small square"
-- 300x250 "medium rectangle"
-- 300x600 "half page"
-- 728x90 "leaderboard"
-
-## Publisher Specifications
-
-The rules for HTML banners are in constant flux so consult your publisher requirements for the rules that apply to your banners. Below are a few typical rules for HTML5 banners.
-
-1. No more than 10 total files per banner inclusive of all HTML, CSS, JavaScript, and other assets when zipped. Exclusive of backup image.
-2. Keep to around 120kb per banner zipped.
-3. All code, fonts, and images must be self-contained within the banner.
-4. The banner should be able to play from a folder on your local machine without an internet connection.
-
-## No JavaScript Fallback
-
-`<noscript>` is not commonly implemented directly into the build files. Most publishers handle this on their side and only a separate image is required. Other publisher's require the fallback to occur within the ad unit's code. Consult your publisher specs.
-
-## Fonts
-
-It would make a ton of sense to use a service like Google Fonts or include a lightweight set in the banner. By experience designers rarely want to do this and like to use fonts you've never heard of. As an alternative, all text from a design may be exported as transparent PNGs and put into a spritesheet created with the `gulp makesprites` directive.

@@ -23,5 +23,11 @@
         "browser": true,
         "node": true
     },
-    "extends": "eslint:recommended"
+    "extends": "eslint:recommended",
+    "globals": {
+        "TimelineLite": true,
+        "Linear": true,
+        "Power1": true,
+        "Power2": true
+    }
 }

@@ -55,23 +55,28 @@ It would make a ton of sense to use a service like Google Fonts or include a lig
 - `gulp clean`: clears the **/dist** and **/dev** folders wiping out all build and distribution
 - `gulp lint`: runs eslint JavaScript linter
 - `gulp makesprites`: Creates sprites found in the assets/sprites folder of the target variant(s) and size(s) and assemble all images found for each into a single sprite
-    + sprite image will be placed in the variant size's **assets** folder named txtsprite.png and will be automatically image optimized.
-    + sprite CSS will be placed in the variant size's folder named txtsprite.css
-    + optional switches can be passed modifying which folders are targeted. flags can be used independently meaning you can target all sizes in a single variant, one size across all variants, or a single variant + size combination to target a single banner.
-        - `-v [variant name]` targets only sizes in the variant
-        - `-s [size name]` targets only the matching size across all variants
-        - example: `gulp makesprites -v ad1 -s 300x250` will target only the 300x250 size of the 'ad1' variant of the path src/ad1/300x250
+  + sprite image will be placed in the variant size's **assets** folder named txtsprite.png and will be automatically image optimized.
+  + sprite CSS will be placed in the variant size's folder named txtsprite.css
+  + optional switches can be passed modifying which folders are targeted. flags can be used independently meaning you can target all sizes in a single variant, one size across all variants, or a single variant + size combination to target a single banner.
+    - `-v [variant name]` targets only sizes in the variant
+    - `-s [size name]` targets only the matching size across all variants
+    - example: `gulp makesprites -v ad1 -s 300x250` will target only the 300x250 size of the 'ad1' variant of the path src/ad1/300x250
 - `gulp build`: Will create a build of each variant size and place them in the **/dev** folder performing the following:
-    + `gulp clean`
-    + `gulp lint`
-    + concat all CSS and reference result file in HTML file
-    + concat all JS and reference result file in HTML file
-    + copy all assets except **assets/sprites** folder
-    + copy HTML file
+  + `gulp clean`
+  + `gulp lint`
+  + concat all CSS and reference result file in HTML file
+  + concat all JS and reference result file in HTML file
+  + copy all assets except **assets/sprites** folder
+  + copy HTML file
+- `gulp serve`: Launches a browser-sync process that monitors file changes that get auto-reloaded in the browser. Useful for rapid creative changes.
+  + `gulp build`
+  + runs browser-sync
+  + watches src files
+  + does _not_ watch files in `/sprite` folders
 - `gulp zip`: Will create the distribution files ready for publishing. Does the following:
-    + `gulp build`
-    + zips up each variant size
-    + places zips in **/dist** folder
+  + `gulp build`
+  + zips up each variant size
+  + places zips in **/dist** folder
 
 # Build Architecture
 
@@ -90,15 +95,15 @@ The following are the folders in the repository. Note that the structure and fol
 - **.gitattributes**: git attributes file
 - **.gitignore**: list of things that will not be placed into the repository
 - **src**: all source files
-    - **global**: global source files used in all banners
-    - **variants**: banner variants
-        + **sizes**: each variant banner size
-            * **.html**: banner HTML file
-            * **screen.css**: banner CSS
-            * **txtsprite.css**: spritesheet CSS created by `gulp makesprites`
-            * **ad.js**: JavaScript file
-            * **assets**: all image assets to be distributed
-                - **sprites**: images to be consolidated into a spritesheet using `gulp makesprites`
+  - **global**: global source files used in all banners
+  - **variants**: banner variants
+    + **sizes**: each variant banner size
+      * **.html**: banner HTML file
+      * **screen.css**: banner CSS
+      * **txtsprite.css**: spritesheet CSS created by `gulp makesprites`
+      * **ad.js**: JavaScript file
+      * **assets**: all image assets to be distributed
+        - **sprites**: images to be consolidated into a spritesheet using `gulp makesprites`
 - **backups**: JPG backups for all variants and sizes
 
 The following are folders created when the environment is setup and/or gulp commands run:

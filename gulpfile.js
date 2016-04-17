@@ -38,8 +38,11 @@ function makesprite(variant, size) {
 
   var spriteData = gulp.src(origin + 'assets/sprites/*.*') // source path of the sprite images
   .pipe(spritesmith({
+    retinaSrcFilter: [origin + 'assets/sprites/*@2x.*'],
     imgName: 'txtsprite.png',
+    retinaImgName: 'txtsprite@2x.png',
     imgPath: 'assets/txtsprite.png',
+    retinaImgPath: 'assets/txtsprite@2x.png',
     cssName: 'txtsprite.css',
     padding: 1
   }));

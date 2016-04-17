@@ -8,6 +8,7 @@ var inject = require('gulp-inject');
 var concat = require('gulp-concat');
 var spritesmith = require('gulp.spritesmith');
 var imagemin = require('gulp-imagemin');
+var pngquant = require('imagemin-pngquant');
 var wait = require('gulp-wait');
 var replace = require('gulp-replace');
 var argv = require('yargs').argv;
@@ -51,7 +52,10 @@ function makesprite(variant, size) {
 
   spriteData.img
     .pipe(buffer())
-    .pipe(imagemin()) // compress PNG
+    .pipe(imagemin({ // compress PNG
+      progressive: true,
+      use: [pngquant({ quality: '40-65', speed: 4 })] // quality settings
+    }))
     .pipe(gulp.dest(dest + 'assets/')); // output path for the sprite
 }
 

@@ -18,7 +18,7 @@ var buffer = require('vinyl-buffer');
 var chalk = require('chalk');
 
 // Console Colors
-// var cErr = chalk.bold.red;
+var cErr = chalk.red;
 var cInfo = chalk.dim.gray;
 var cTask = chalk.bold.green;
 
@@ -46,7 +46,10 @@ function makesprite(variant, size) {
     retinaImgPath: 'assets/txtsprite@2x.png',
     cssName: 'txtsprite.css',
     padding: 1
-  }));
+  }))
+  .on('error', function(error){
+    console.log(cErr(error));
+  });
 
   spriteData.css.pipe(gulp.dest(dest)); // output path for the CSS
 

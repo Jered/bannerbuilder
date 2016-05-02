@@ -8,6 +8,7 @@ var inject = require('gulp-inject');
 var concat = require('gulp-concat');
 var spritesmith = require('gulp.spritesmith');
 var imagemin = require('gulp-imagemin');
+var pngquant = require('imagemin-pngquant');
 var wait = require('gulp-wait');
 var replace = require('gulp-replace');
 var argv = require('yargs').argv;
@@ -17,7 +18,7 @@ var buffer = require('vinyl-buffer');
 var chalk = require('chalk');
 
 // Console Colors
-// var cErr = chalk.bold.red;
+var cErr = chalk.red;
 var cInfo = chalk.dim.gray;
 var cTask = chalk.bold.green;
 
@@ -38,17 +39,26 @@ function makesprite(variant, size) {
 
   var spriteData = gulp.src(origin + 'assets/sprites/*.*') // source path of the sprite images
   .pipe(spritesmith({
+    retinaSrcFilter: [origin + 'assets/sprites/*@2x.*'],
     imgName: 'txtsprite.png',
+    retinaImgName: 'txtsprite@2x.png',
     imgPath: 'assets/txtsprite.png',
+    retinaImgPath: 'assets/txtsprite@2x.png',
     cssName: 'txtsprite.css',
     padding: 1
-  }));
+  }))
+  .on('error', function(error){
+    console.log(cErr(error));
+  });
 
   spriteData.css.pipe(gulp.dest(dest)); // output path for the CSS
 
   spriteData.img
     .pipe(buffer())
-    .pipe(imagemin()) // compress PNG
+    .pipe(imagemin({ // compress PNG
+      progressive: true,
+      use: [pngquant({ quality: '40-65', speed: 4 })] // quality settings
+    }))
     .pipe(gulp.dest(dest + 'assets/')); // output path for the sprite
 }
 

@@ -32,24 +32,38 @@ function getFolders(dir) {
     });
 }
 
-function makesprite(variant, size) {
+function makesprite(variant, size, retina) {
   var folder = variant + '/' + size + '/';
   var origin = 'src/variants/' + folder;
   var dest = origin;
+  var spriteData;
 
-  var spriteData = gulp.src(origin + 'assets/sprites/*.*') // source path of the sprite images
-  .pipe(spritesmith({
-    retinaSrcFilter: [origin + 'assets/sprites/*@2x.*'],
-    imgName: 'txtsprite.png',
-    retinaImgName: 'txtsprite@2x.png',
-    imgPath: 'assets/txtsprite.png',
-    retinaImgPath: 'assets/txtsprite@2x.png',
-    cssName: 'txtsprite.css',
-    padding: 1
-  }))
-  .on('error', function(error){
-    console.log(cErr(error));
-  });
+  if (!retina) {
+    spriteData = gulp.src(origin + 'assets/sprites/*.*') // source path of the sprite images
+    .pipe(spritesmith({
+      imgName: 'txtsprite.png',
+      imgPath: 'assets/txtsprite.png',
+      cssName: 'txtsprite.css',
+      padding: 1
+    }))
+    .on('error', function(error){
+      console.log(cErr(error));
+    });
+  } else {
+    spriteData = gulp.src(origin + 'assets/sprites/*.*') // source path of the sprite images
+    .pipe(spritesmith({
+      retinaSrcFilter: [origin + 'assets/sprites/*@2x.*'],
+      imgName: 'txtsprite.png',
+      retinaImgName: 'txtsprite@2x.png',
+      imgPath: 'assets/txtsprite.png',
+      retinaImgPath: 'assets/txtsprite@2x.png',
+      cssName: 'txtsprite.css',
+      padding: 1
+    }))
+    .on('error', function(error){
+      console.log(cErr(error));
+    });
+  }
 
   spriteData.css.pipe(gulp.dest(dest)); // output path for the CSS
 
@@ -98,12 +112,14 @@ gulp.task('lint', function () {
   you can pass arguments on the command line -v to specify a single variant and -s to specify a single size. These
   arguments can be used together or seperately
   @param -v [variant folder name] (optional)
-	@param -s [size folder name] (optional)
-	@usage gulp makesprites -v myvariant -s mysize
+  @param -s [size folder name] (optional)
+  @param -r [retina images] (optional, default true) requires retina images exist for all images in the spritesheet `[file]@2x.[ext]`
+  @usage gulp makesprites -v myvariant -s mysize -r true
 **/
 gulp.task('makesprites', function() {
   console.log(cTask('Making sprite sheets...'));
   console.log(cInfo('variant'), argv.v, cInfo(', size'), argv.s);
+  var retina = (argv.r === undefined) ? true : ((argv.r === 'false') ? false : true);
   var variants = (argv.v === undefined) ? getFolders('src/variants/') : [argv.v];
 
   for (var i=0, vl=variants.length; i < vl; i++) {
@@ -112,9 +128,7 @@ gulp.task('makesprites', function() {
 
     for (var j=0, sl=sizes.length; j < sl; j++) {
       var size = sizes[j];
-      if (size != 'tablet') {
-        makesprite(variant, size);
-      }
+      makesprite(variant, size, retina);
     }
   }
 });
@@ -211,7 +225,7 @@ gulp.task('zip', ['build'], function () {
 /** Development-optimized workflow with browsersync
   Clean/build first, then serve and watch
   Does not pickup changes to sprite folders these must be updated manually to create new sprites
-	@usage gulp serve
+  @usage gulp serve
 **/
 gulp.task('serve', ['build'], function () {
   console.log(cTask('Browser Sync ...'));

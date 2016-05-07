@@ -1,35 +1,36 @@
 /* common styles */
 img {
-	border:none;
-	margin:0;
+  border: none;
+  margin: 0;
 }
 
 .center {
-	display: block;
-	left: 0;
-	right: 0;
-    margin-left: auto;
-    margin-right: auto;
+  display: block;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-body { 
-	background: #fff; 
-	margin: 0;padding: 0;
-	color: #fff;
+body {
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  color: #fff;
 }
 
 #banner {
-	position:absolute;
-	background:#092e23;
-	border:#092e23 1px solid;
-	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
-	box-sizing: border-box;         /* Opera/IE 8+ */
-	overflow: hidden;
+  position: absolute;
+  background: #fff;
+  border: #000 1px solid;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
+  overflow: hidden;
 }
-	
-#banner:hover{
-	cursor:pointer
+
+#banner:hover {
+  cursor: pointer;
 }
 
 /* end common styles */

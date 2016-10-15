@@ -60,7 +60,8 @@ It would make a ton of sense to use a service like Google Fonts or include a lig
   + optional switches can be passed modifying which folders are targeted. flags can be used independently meaning you can target all sizes in a single variant, one size across all variants, or a single variant + size combination to target a single banner.
     - `-v [variant name]` targets only sizes in the variant
     - `-s [size name]` targets only the matching size across all variants
-    - example: `gulp makesprites -v ad1 -s 300x250` will target only the 300x250 size of the 'ad1' variant of the path src/ad1/300x250
+    - `-r [boolean]` flags if there are retina images or not. Default is `true`
+    - example: `gulp makesprites -v ad1 -s 300x250 -r false` will target only the 300x250 size of the 'ad1' variant of the path src/ad1/300x250 and not expect retina images
 - `gulp build`: Will create a build of each variant size and place them in the **/dev** folder performing the following:
   + `gulp clean`
   + `gulp lint`

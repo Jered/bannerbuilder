@@ -1,6 +1,6 @@
 {
   "name": "bannerbuilder",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "NPM/Gulp based banner build setup that allows for easy build of similar HTML banners by variation and size",
   "scripts": {
     "clean": "gulp clean",

@@ -27,6 +27,7 @@ body {
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
   box-sizing: border-box;         /* Opera/IE 8+ */
   overflow: hidden;
+  opacity: 0;                     /* start with a zero opacity for loading */
 }
 
 #banner:hover {

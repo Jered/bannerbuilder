@@ -69,10 +69,7 @@ function makesprite(variant, size, retina) {
 
   spriteData.img
     .pipe(buffer())
-    .pipe(imagemin({ // compress PNG
-      progressive: true,
-      use: [pngquant({ quality: '40-65', speed: 4 })] // quality settings
-    }))
+    .pipe(imagemin([pngquant({quality: '10-30', speed: 4})], {verbose: true}))
     .pipe(gulp.dest(dest + 'assets/')); // output path for the sprite
 }
 

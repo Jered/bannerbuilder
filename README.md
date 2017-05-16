@@ -11,6 +11,18 @@ NPM/Gulp based banner build setup that allows for easy build of similar HTML ban
 
 The variations of a similar set of banners. For example, the concept is essentially the same but may have different content. Each variation is named uniquely.
 
+In this repo are two example variations: `standard` and `flashtalking`
+
+### `standard` template
+
+The standard template is a starter for standard `clickTag` based publishers. It doesn't use any proprietary publishing libraries and is accepted by many publishers such as DoubleClick
+
+### `flashtalking` template
+
+The flashtalking template is a starter for FlashTalking specific publishing which requires the inclusion of a FlashTalking library API in each ad. Alongside the root `index.html` of each ad a `manifest.js` file is also required. All external libraries must be hosted from [FlashTalking CDN](https://flashtalkingus.atlassian.net/wiki/display/HTD/Libraries+Hosted+By+Flashtalking) as well.
+
+See [FlashTalking specs](https://flashtalkingus.atlassian.net/wiki/display/HTD/Standard+Ads).
+
 ## Sizes
 
 Sizes can be named whatever you like but it's easiest to just use the dimensions. Here's some common IAB sizes below.
@@ -42,7 +54,7 @@ It would make a ton of sense to use a service like Google Fonts or include a lig
 
 ## Install Node.JS and its packages:
 
-> *OSX Users Please Read*  
+> *OSX Users Please Read*
 > You'll need to setup your Node install correctly so you do not use sudo. Please see [this guide](http://michael-kuehnel.de/node.js/2015/09/08/using-vm-to-switch-node-versions.html) before proceeding or you will not be able to run without `sudo` commands. It uses NVM to install and manage Node.
 
 - Install node using the above method

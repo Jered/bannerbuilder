@@ -1,0 +1,36 @@
+#banner {
+  width: 300px;
+  height: 250px;
+  background: url('assets/background.png') no-repeat 0 0;
+}
+
+#logo {
+  position: absolute;
+  width: 107px;
+  top: 22px;
+}
+
+#rule {
+  position: absolute;
+  display: block;
+  height: 1px;
+  width: 180px;
+  border: 0;
+  border-top: 1px solid #d1d8e9;
+  top: 100px;
+}
+
+#txt1 {
+  position: absolute;
+  top: 50px;
+}
+
+#txt2 {
+  position: absolute;
+  top: 50px;
+}
+
+#cta {
+  position: absolute;
+  top: 150px;
+}

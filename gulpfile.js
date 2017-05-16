@@ -153,6 +153,9 @@ gulp.task('build', ['clean','lint'], function () {
       gulp.src(['src/global/assets/**', origin + 'assets/**', '!' + origin + 'assets/sprites/', '!' + origin + 'assets/sprites/**'])
         .pipe(gulp.dest(dest + 'assets/'));
 
+      // move over any manifest.js files for FlashTalking ads to the root of each banner next to index.html
+      gulp.src([origin + 'manifest.js']).pipe(gulp.dest(dest));
+
       // concat the styles
       var styleStream = gulp.src(['src/global/styles/*.css', origin + '*.css'])
         .pipe(concat('screen.css'))
@@ -160,7 +163,7 @@ gulp.task('build', ['clean','lint'], function () {
       merged.add(styleStream);
 
       // concat the javascript
-      var scriptStream = gulp.src(['src/global/scripts/**/*.js', origin + '*.js'])
+      var scriptStream = gulp.src(['src/global/scripts/**/*.js', origin + '*.js', '!' + origin + 'manifest.js'])
         .pipe(concat('scripts.min.js'))
         .pipe(gulp.dest(dest));
       merged.add(scriptStream);

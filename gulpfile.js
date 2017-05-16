@@ -54,9 +54,9 @@ function makesprite(variant, size, retina) {
     .pipe(spritesmith({
       retinaSrcFilter: [origin + 'assets/sprites/*@2x.*'],
       imgName: 'txtsprite.png',
-      retinaImgName: 'txtsprite@2x.png',
+      retinaImgName: 'txtsprite2x.png',
       imgPath: 'assets/txtsprite.png',
-      retinaImgPath: 'assets/txtsprite@2x.png',
+      retinaImgPath: 'assets/txtsprite2x.png',
       cssName: 'txtsprite.css',
       padding: 1
     }))
@@ -237,13 +237,13 @@ gulp.task('serve', ['build'], function () {
   // the browser
   gulp.watch(
     ['src/global/styles/*.css',
-    'src/global/scripts/**/*.js',
-    'src/variants/**/*.html',
-    'src/variants/**/*.js',
-    'src/variants/**/*.css',
-    'src/variants/**/assets/*.jpg',
-    'src/variants/**/assets/*.png',
-    'src/variants/**/assets/*.gif'],
+      'src/global/scripts/**/*.js',
+      'src/variants/**/*.html',
+      'src/variants/**/*.js',
+      'src/variants/**/*.css',
+      'src/variants/**/assets/*.jpg',
+      'src/variants/**/assets/*.png',
+      'src/variants/**/assets/*.gif'],
         ['build', reload]);
 
   // DEPRECATED UNTIL A MORE ELEGANT SOLUTION. THIS TRIGGERS MULTIPLE BUILD AND RELOADS

@@ -205,7 +205,7 @@ gulp.task('zip', ['build'], function () {
     for (var j=0, sl=sizes.length; j < sl; j++) {
       var size = sizes[j];
       var folder = 'dev/' + variant + '/' + size + '/';
-      var filename = pkg.meta.client + ' ' + pkg.meta.campaign + ' ' + variant + ' ' + size + ' v' + pkg.version + '.zip';
+      var filename = pkg.meta.client + '-' + pkg.meta.campaign + '-' + variant + '-' + size + '-v' + pkg.version + '.zip';
 
       //console.info(filename);
 

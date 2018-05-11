@@ -1,7 +1,8 @@
 {
   "name": "bannerbuilder",
-  "version": "0.1.1",
-  "description": "NPM/Gulp based banner build setup that allows for easy build of similar HTML banners by variation and size",
+  "version": "0.1.2",
+  "description":
+    "NPM/Gulp based banner build setup that allows for easy build of similar HTML banners by variation and size",
   "scripts": {
     "clean": "gulp clean",
     "build": "gulp build",
@@ -15,39 +16,29 @@
     "type": "git",
     "url": "https://github.com/Jered/bannerbuilder.git"
   },
-  "keywords": [
-    "HTML5",
-    "media",
-    "banners",
-    "javascript",
-    "css",
-    "gulp"
-  ],
+  "keywords": ["HTML5", "media", "banners", "javascript", "css", "gulp"],
   "author": "Jered Cuenco",
-  "contributors": [
-    "Barry Admundson",
-    "Ashlin Aronin"
-  ],
+  "contributors": ["Barry Admundson", "Ashlin Aronin"],
   "license": "MIT",
   "homepage": "https://github.com/Jered/bannerbuilder/blob/master/README.md",
   "devDependencies": {
     "browser-sync": "^2.10.0",
-    "chalk": "^1.1.1",
-    "del": "^2.2.0",
-    "eslint": "^3.19.0",
+    "chalk": "^2.4.1",
+    "del": "^3.0.0",
+    "eslint": "^4.19.1",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
-    "gulp-eslint": "^3.0.1",
-    "gulp-imagemin": "^3.2.0",
+    "gulp-eslint": "^4.0.2",
+    "gulp-imagemin": "^4.1.0",
     "gulp-inject": "^4.2.0",
-    "gulp-replace": "^0.5.4",
-    "gulp-size": "^2.1.0",
+    "gulp-replace": "^0.6.1",
+    "gulp-size": "^3.0.0",
     "gulp-wait": "0.0.2",
     "gulp-zip": "^4.0.0",
     "gulp.spritesmith": "^6.2.0",
     "imagemin-pngquant": "^5.0.0",
     "merge-stream": "^1.0.0",
     "vinyl-buffer": "^1.0.0",
-    "yargs": "^7.0.2"
+    "yargs": "^11.0.0"
   }
 }

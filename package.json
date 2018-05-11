@@ -4,6 +4,7 @@
   "description":
     "NPM/Gulp based banner build setup that allows for easy build of similar HTML banners by variation and size",
   "scripts": {
+    "start": "gulp serve",
     "clean": "gulp clean",
     "build": "gulp build",
     "zip": "gulp zip"

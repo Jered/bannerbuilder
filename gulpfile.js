@@ -123,7 +123,7 @@ function makesprite(variant, size, retina) {
   spriteData.img
     .pipe(buffer())
     .pipe(
-      imagemin([pngquant({ quality: '10-30', speed: 4 })], { verbose: true })
+      imagemin([pngquant({ quality: [0.1, 0.3], speed: 4 })], { verbose: true })
     )
     .pipe(gulp.dest(dest + 'assets/')); // output path for the sprite
 }
@@ -171,7 +171,7 @@ gulp.task('lint', function() {
   @param -r [retina images] (optional, default true) requires retina images exist for all images in the spritesheet `[file]@2x.[ext]`
   @usage gulp makesprites -v myvariant -s mysize -r true
 **/
-gulp.task('makesprites', function() {
+gulp.task('makesprites', async function() {
   console.log(cTask('Making sprite sheets...'));
   console.log(cInfo('variant'), argv.v, cInfo(', size'), argv.s);
   var retina = argv.r === undefined ? true : argv.r === 'false' ? false : true;
@@ -184,9 +184,11 @@ gulp.task('makesprites', function() {
 
     for (var j = 0, sl = sizes.length; j < sl; j++) {
       var size = sizes[j];
-      makesprite(variant, size, retina);
+      await makesprite(variant, size, retina);
     }
   }
+
+  return Promise.resolve('All sprites built');
 });
 
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.

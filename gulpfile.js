@@ -1,36 +1,84 @@
-var gulp = require('gulp');
-var pkg = require('./package.json');
-var fs = require('fs');
-var path = require('path');
-var merge = require('merge-stream');
-var filesize = require('gulp-size');
-var inject = require('gulp-inject');
-var concat = require('gulp-concat');
-var spritesmith = require('gulp.spritesmith');
-var imagemin = require('gulp-imagemin');
-var pngquant = require('imagemin-pngquant');
-var wait = require('gulp-wait');
-var replace = require('gulp-replace');
-var argv = require('yargs').argv;
-var eslint = require('gulp-eslint');
-var del = require('del');
-var buffer = require('vinyl-buffer');
-var chalk = require('chalk');
+const gulp = require('gulp');
+const pkg = require('./package.json');
+const fs = require('fs');
+const path = require('path');
+const merge = require('merge-stream');
+const filesize = require('gulp-size');
+const inject = require('gulp-inject');
+const concat = require('gulp-concat');
+const spritesmith = require('gulp.spritesmith');
+const imagemin = require('gulp-imagemin');
+const pngquant = require('imagemin-pngquant');
+const wait = require('gulp-wait');
+const replace = require('gulp-replace');
+const argv = require('yargs').argv;
+const eslint = require('gulp-eslint');
+const del = require('del');
+const buffer = require('vinyl-buffer');
+const chalk = require('chalk');
 
 // Console Colors
-var cErr = chalk.red;
-var cInfo = chalk.dim.gray;
-var cTask = chalk.bold.green;
+const cErr = chalk.red;
+const cInfo = chalk.dim.gray;
+const cTask = chalk.bold.green;
 
-var browserSync = require('browser-sync').create();
-var reload = browserSync.reload;
+const browsersync = require('browser-sync').create();
 
+// BrowserSync
+function browserSync(done) {
+  browsersync.init({
+    server: {
+      baseDir: './dev/'
+    },
+    port: 3000,
+    directory: true
+  });
+  done();
+}
+// BrowserSync Reload
+function browserSyncReload(done) {
+  browsersync.reload();
+  done();
+}
+
+// Watch Files for BrowserSync
+// Does not pickup changes to sprite folders these must be updated manually to create new sprites
+function watchFiles() {
+  // DEPRECATED UNTIL A MORE ELEGANT SOLUTION. THIS TRIGGERS MULTIPLE BUILD AND RELOADS
+  // // If sprites are updated, remake them and reload the page
+  // gulp.watch(
+  //   ['src/variants/**/sprites/*.png',
+  //   'src/variants/**/sprites/*.jpg',
+  //   'src/variants/**/sprites/*.gif'],
+  //   gulp.series('makesprites')
+  // ); // TODO: This is brute force. Should target only changed directories.
+
+  // If changes are made to global or variant html, js or css, or background
+  // images which don't require re-making sprites, rebuild everything and reload
+  // the browser
+  gulp.watch(
+    [
+      'src/global/styles/*.css',
+      'src/global/scripts/**/*.js',
+      'src/variants/**/*.html',
+      'src/variants/**/*.js',
+      'src/variants/**/*.css',
+      'src/variants/**/assets/*.jpg',
+      'src/variants/**/assets/*.png',
+      'src/variants/**/assets/*.gif'
+    ],
+    gulp.series('build', browserSyncReload)
+  );
+}
+
+// gets a folder in the specified path
 function getFolders(dir) {
   return fs.readdirSync(dir).filter(function(file) {
     return fs.statSync(path.join(dir, file)).isDirectory();
   });
 }
 
+// makes a sprite sheet for a banner with optional variatn, size, and retina parameters
 function makesprite(variant, size, retina) {
   var folder = variant + '/' + size + '/';
   var origin = 'src/variants/' + folder;
@@ -80,6 +128,7 @@ function makesprite(variant, size, retina) {
     .pipe(gulp.dest(dest + 'assets/')); // output path for the sprite
 }
 
+// just consoles out the pkg.version
 gulp.task('default', function() {
   // place code for your default task here
   console.info(cInfo('version: '), pkg.version);
@@ -142,7 +191,7 @@ gulp.task('makesprites', function() {
 
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
 // builds the src files into the dev folder. Concats JS and css
-gulp.task('build', ['clean', 'lint'], function() {
+gulp.task('build', gulp.series('clean', 'lint', function() {
   console.log(cTask('Building Banners...'));
 
   var variants = getFolders('src/variants/');
@@ -170,7 +219,7 @@ gulp.task('build', ['clean', 'lint'], function() {
         .pipe(gulp.dest(dest + 'assets/'));
 
       // move over any manifest.js files for FlashTalking ads to the root of each banner next to index.html
-      gulp.src([origin + 'manifest.js']).pipe(gulp.dest(dest));
+      gulp.src([origin + 'manifest.js'], { allowEmpty: true }).pipe(gulp.dest(dest));
 
       // concat the styles
       var styleStream = gulp
@@ -226,11 +275,11 @@ gulp.task('build', ['clean', 'lint'], function() {
   }
 
   return fullmerge;
-});
+}));
 
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
 // create zips per size for each variant and place in the dist folder
-gulp.task('zip', ['build'], function() {
+gulp.task('zip', gulp.series('build', function() {
   console.log(cTask('Zipping Banners'));
   var zip = require('gulp-zip'); // zip files
   // var date = new Date().toISOString().replace(/[^0-9]/g, '');
@@ -270,43 +319,10 @@ gulp.task('zip', ['build'], function() {
   }
 
   return merged;
-});
+}));
 
 /** Development-optimized workflow with browsersync
   Clean/build first, then serve and watch
-  Does not pickup changes to sprite folders these must be updated manually to create new sprites
   @usage gulp serve
 **/
-gulp.task('serve', ['build'], function() {
-  console.log(cTask('Browser Sync ...'));
-
-  browserSync.init({
-    server: './dev',
-    directory: true
-  });
-
-  // If changes are made to global or variant html, js or css, or background
-  // images which don't require re-making sprites, rebuild everything and reload
-  // the browser
-  gulp.watch(
-    [
-      'src/global/styles/*.css',
-      'src/global/scripts/**/*.js',
-      'src/variants/**/*.html',
-      'src/variants/**/*.js',
-      'src/variants/**/*.css',
-      'src/variants/**/assets/*.jpg',
-      'src/variants/**/assets/*.png',
-      'src/variants/**/assets/*.gif'
-    ],
-    ['build', reload]
-  );
-
-  // DEPRECATED UNTIL A MORE ELEGANT SOLUTION. THIS TRIGGERS MULTIPLE BUILD AND RELOADS
-  // // If sprites are updated, remake them and reload the page
-  // gulp.watch(
-  //   ['src/variants/**/sprites/*.png',
-  //   'src/variants/**/sprites/*.jpg',
-  //   'src/variants/**/sprites/*.gif'],
-  //       ['makesprites']); // TODO: This is brute force. Should target only changed directories.
-});
+gulp.task('serve', gulp.series('build', gulp.parallel(watchFiles, browserSync)), console.log(cTask('BrowserSync Watch DEV MODE')));

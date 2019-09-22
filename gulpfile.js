@@ -166,16 +166,16 @@ gulp.task('lint', function() {
 /** take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
   you can pass arguments on the command line -v to specify a single variant and -s to specify a single size. These
   arguments can be used together or seperately
-  @param -v [variant folder name] (optional)
-  @param -s [size folder name] (optional)
-  @param -r [retina images] (optional, default true) requires retina images exist for all images in the spritesheet `[file]@2x.[ext]`
-  @usage gulp makesprites -v myvariant -s mysize -r true
+  @param --variant [variant folder name] (optional)
+  @param --s [size folder name] (optional)
+  @param --r [retina images] (optional, default true) requires retina images exist for all images in the spritesheet `[file]@2x.[ext]`
+  @usage gulp makesprites --variant myvariant --s mysize --r true
 **/
 gulp.task('makesprites', async function() {
   console.log(cTask('Making sprite sheets...'));
-  console.log(cInfo('variant'), argv.v, cInfo(', size'), argv.s);
+  console.log(cInfo('variant'), argv.variant, cInfo(', size'), argv.s);
   var retina = argv.r === undefined ? true : argv.r === 'false' ? false : true;
-  var variants = argv.v === undefined ? getFolders('src/variants/') : [argv.v];
+  var variants = argv.variant === undefined ? getFolders('src/variants/') : [argv.variant];
 
   for (var i = 0, vl = variants.length; i < vl; i++) {
     var variant = variants[i];

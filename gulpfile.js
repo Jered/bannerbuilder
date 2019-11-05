@@ -60,6 +60,8 @@ function watchFiles() {
     [
       'src/global/styles/*.css',
       'src/global/scripts/**/*.js',
+      'src/variants/*.js',
+      'src/variants/*.css',
       'src/variants/**/*.html',
       'src/variants/**/*.js',
       'src/variants/**/*.css',
@@ -137,7 +139,8 @@ gulp.task('default', function() {
 // Cleans the dist and dev folders
 gulp.task('clean', function() {
   return del(['dist/**/*', 'dev/**/*']).then(function(paths) {
-    console.log(cTask('Cleaning...\n'), cInfo(paths.join('\n ')));
+    // console.log(cTask('Cleaning...\n'), cInfo(paths.join('\n ')));
+    console.log(cTask('Cleaning...\n'));
   });
 });
 
@@ -150,7 +153,7 @@ gulp.task('lint', function() {
   // Otherwise, the task may end before the stream has finished.
   return (
     gulp
-      .src(['src/**/*.js'])
+      .src(['src/*.js','src/**/*.js'])
       // eslint() attaches the lint output to the "eslint" property
       // of the file object so it can be used by other modules.
       .pipe(eslint())
@@ -205,27 +208,27 @@ gulp.task('build', gulp.series('clean', 'lint', function() {
 
     for (var j = 0, sl = sizes.length; j < sl; j++) {
       var size = sizes[j];
-      var folder = variant + '/' + size + '/';
-      var origin = 'src/variants/' + folder;
-      var dest = 'dev/' + folder;
+      var variantFolder = 'src/variants/' + variant + '/';
+      var sizeFolder = variantFolder + size + '/';
+      var dest = 'dev/' + variant + '/' + size + '/';
       var merged = merge();
 
       // move images
       gulp
         .src([
           'src/global/assets/**',
-          origin + 'assets/**',
-          '!' + origin + 'assets/sprites/',
-          '!' + origin + 'assets/sprites/**'
+          sizeFolder + 'assets/**',
+          '!' + sizeFolder + 'assets/sprites/',
+          '!' + sizeFolder + 'assets/sprites/**'
         ])
         .pipe(gulp.dest(dest + 'assets/'));
 
       // move over any manifest.js files for FlashTalking ads to the root of each banner next to index.html
-      gulp.src([origin + 'manifest.js'], { allowEmpty: true }).pipe(gulp.dest(dest));
+      gulp.src([sizeFolder + 'manifest.js'], { allowEmpty: true }).pipe(gulp.dest(dest));
 
       // concat the styles
       var styleStream = gulp
-        .src(['src/global/styles/*.css', origin + '*.css'])
+        .src(['src/global/styles/*.css', variantFolder + '*.css', sizeFolder + '*.css'])
         .pipe(concat('screen.css'))
         .pipe(gulp.dest(dest));
       merged.add(styleStream);
@@ -234,8 +237,9 @@ gulp.task('build', gulp.series('clean', 'lint', function() {
       var scriptStream = gulp
         .src([
           'src/global/scripts/**/*.js',
-          origin + '*.js',
-          '!' + origin + 'manifest.js'
+          variantFolder + '*.js',
+          sizeFolder + '*.js',
+          '!' + sizeFolder + 'manifest.js'
         ])
         .pipe(concat('scripts.min.js'))
         .pipe(gulp.dest(dest));
@@ -243,7 +247,7 @@ gulp.task('build', gulp.series('clean', 'lint', function() {
 
       // inject the style and JS as well as meta info
       var injectStream = gulp
-        .src(origin + '*.html')
+        .src(sizeFolder + '*.html')
         .pipe(inject(merged, { ignorePath: dest, addRootSlash: false }))
         .pipe(replace('{{author}}', pkg.author))
         .pipe(replace('{{description}}', pkg.description))
@@ -281,21 +285,21 @@ gulp.task('build', gulp.series('clean', 'lint', function() {
 
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
 // create zips per size for each variant and place in the dist folder
-gulp.task('zip', gulp.series('build', function() {
+function archive (done) {
   console.log(cTask('Zipping Banners'));
-  var zip = require('gulp-zip'); // zip files
+  const gulpZip = require('gulp-zip'); // zip files
   // var date = new Date().toISOString().replace(/[^0-9]/g, '');
-  var merged = merge();
-  var variants = getFolders('dev/');
+  const variants = getFolders('dev/');
+  const zipArray = [];
 
   for (var i = 0, vl = variants.length; i < vl; i++) {
-    var variant = variants[i];
-    var sizes = getFolders('dev/' + variant);
+    const variant = variants[i];
+    const sizes = getFolders('dev/' + variant);
 
     for (var j = 0, sl = sizes.length; j < sl; j++) {
-      var size = sizes[j];
-      var folder = 'dev/' + variant + '/' + size + '/';
-      var filename =
+      const size = sizes[j];
+      const folder = 'dev/' + variant + '/' + size + '/';
+      const filename =
         pkg.meta.client +
         '-' +
         pkg.meta.campaign +
@@ -309,22 +313,31 @@ gulp.task('zip', gulp.series('build', function() {
 
       //console.info(filename);
 
-      // keep directory structure
-      var zipStream = gulp
-        .src(folder + '**/*')
-        .pipe(zip(filename))
-        .pipe(filesize({ title: filename, showFiles: true }))
-        .pipe(gulp.dest('dist'));
+      // add the directory to the zip array.
+      const singleZip = function () {
+        return gulp
+          .src(folder + '**/*')
+          .pipe(gulpZip(filename))
+          .pipe(filesize({title: '...compressed size'}))
+          .pipe(gulp.dest('dist'));
+      };
 
-      merged.add(zipStream);
+      // Use function.displayName to customize the task name
+      singleZip.displayName = `${variant}-${size}`;
+
+      zipArray.push(singleZip);
     }
   }
 
-  return merged;
-}));
+  return gulp.series(...zipArray, (seriesDone) => {
+    seriesDone();
+    done();
+  })();
+}
 
 /** Development-optimized workflow with browsersync
   Clean/build first, then serve and watch
   @usage gulp serve
 **/
 gulp.task('serve', gulp.series('build', gulp.parallel(watchFiles, browserSync)), console.log(cTask('BrowserSync Watch DEV MODE')));
+gulp.task('zip', gulp.series('build', archive));

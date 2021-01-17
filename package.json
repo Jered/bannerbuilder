@@ -6,7 +6,15 @@
     "start": "gulp serve",
     "clean": "gulp clean",
     "build": "gulp build",
-    "zip": "gulp zip"
+    "zip": "gulp zip",
+    "lint:js": "eslint --ext .js --fix",
+    "lint:style": "stylelint **/*.css --fix --ignore-path .gitignore",
+    "lint": "npm run lint:js && npm run lint:style"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   },
   "meta": {
     "client": "Client",
@@ -36,6 +44,8 @@
     "chalk": "^4.1.0",
     "del": "^6.0.0",
     "eslint": "^7.18.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.0",
     "gulp-eslint": "^6.0.0",
@@ -46,8 +56,14 @@
     "gulp-wait": "0.0.2",
     "gulp-zip": "^5.0.2",
     "gulp.spritesmith": "^6.11.0",
+    "husky": "^4.3.8",
     "imagemin-pngquant": "^9.0.1",
     "merge-stream": "^2.0.0",
+    "prettier": "^2.2.1",
+    "stylelint": "^13.8.0",
+    "stylelint-config-concentric-order": "^4.0.1",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-standard": "^20.0.0",
     "vinyl-buffer": "^1.0.0",
     "yargs": "^16.2.0"
   }

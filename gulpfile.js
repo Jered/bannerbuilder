@@ -12,7 +12,6 @@ const pngquant = require('imagemin-pngquant');
 const wait = require('gulp-wait');
 const replace = require('gulp-replace');
 const argv = require('yargs').argv;
-const eslint = require('gulp-eslint');
 const del = require('del');
 const buffer = require('vinyl-buffer');
 const chalk = require('chalk');
@@ -28,10 +27,10 @@ const browsersync = require('browser-sync').create();
 function browserSync(done) {
   browsersync.init({
     server: {
-      baseDir: './dev/'
+      baseDir: './dev/',
     },
     port: 3000,
-    directory: true
+    directory: true,
   });
   done();
 }
@@ -67,15 +66,15 @@ function watchFiles() {
       'src/variants/**/*.css',
       'src/variants/**/assets/*.jpg',
       'src/variants/**/assets/*.png',
-      'src/variants/**/assets/*.gif'
+      'src/variants/**/assets/*.gif',
     ],
-    gulp.series('build', browserSyncReload)
+    gulp.series('build', browserSyncReload),
   );
 }
 
 // gets a folder in the specified path
 function getFolders(dir) {
-  return fs.readdirSync(dir).filter(function(file) {
+  return fs.readdirSync(dir).filter(function (file) {
     return fs.statSync(path.join(dir, file)).isDirectory();
   });
 }
@@ -95,10 +94,10 @@ function makesprite(variant, size, retina) {
           imgName: 'txtsprite.png',
           imgPath: 'assets/txtsprite.png',
           cssName: 'txtsprite.css',
-          padding: 1
-        })
+          padding: 1,
+        }),
       )
-      .on('error', function(error) {
+      .on('error', function (error) {
         console.log(cErr(error));
       });
   } else {
@@ -112,10 +111,10 @@ function makesprite(variant, size, retina) {
           imgPath: 'assets/txtsprite.png',
           retinaImgPath: 'assets/txtsprite2x.png',
           cssName: 'txtsprite.css',
-          padding: 1
-        })
+          padding: 1,
+        }),
       )
-      .on('error', function(error) {
+      .on('error', function (error) {
         console.log(cErr(error));
       });
   }
@@ -125,45 +124,26 @@ function makesprite(variant, size, retina) {
   spriteData.img
     .pipe(buffer())
     .pipe(
-      imagemin([pngquant({ quality: [0.1, 0.3], speed: 4 })], { verbose: true })
+      imagemin([pngquant({ quality: [0.1, 0.3], speed: 4 })], {
+        verbose: true,
+      }),
     )
     .pipe(gulp.dest(dest + 'assets/')); // output path for the sprite
 }
 
 // just consoles out the pkg.version
-gulp.task('default', function() {
+gulp.task('default', function () {
   // place code for your default task here
   console.info(cInfo('version: '), pkg.version);
 });
 
 // Cleans the dist and dev folders
-gulp.task('clean', function() {
-  return del(['dist/**/*', 'dev/**/*']).then(function(paths) {
+gulp.task('clean', function () {
+  // eslint-disable-next-line
+  return del(['dist/**/*', 'dev/**/*']).then(function (paths) {
     // console.log(cTask('Cleaning...\n'), cInfo(paths.join('\n ')));
     console.log(cTask('Cleaning...\n'));
   });
-});
-
-// lints the js files for errors
-gulp.task('lint', function() {
-  console.log(cTask('Linting files...'));
-  // ESLint ignores files with "node_modules" paths.
-  // So, it's best to have gulp ignore the directory as well.
-  // Also, Be sure to return the stream from the task;
-  // Otherwise, the task may end before the stream has finished.
-  return (
-    gulp
-      .src(['src/*.js','src/**/*.js'])
-      // eslint() attaches the lint output to the "eslint" property
-      // of the file object so it can be used by other modules.
-      .pipe(eslint())
-      // eslint.format() outputs the lint results to the console.
-      // Alternatively use eslint.formatEach() (see Docs).
-      .pipe(eslint.format())
-      // To have the process exit with an error code (1) on
-      // lint error, return the stream and pipe to failAfterError last.
-      .pipe(eslint.failAfterError())
-  );
 });
 
 /** take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
@@ -174,11 +154,12 @@ gulp.task('lint', function() {
   @param --r [retina images] (optional, default true) requires retina images exist for all images in the spritesheet `[file]@2x.[ext]`
   @usage gulp makesprites --variant myvariant --s mysize --r true
 **/
-gulp.task('makesprites', async function() {
+gulp.task('makesprites', async function () {
   console.log(cTask('Making sprite sheets...'));
   console.log(cInfo('variant'), argv.variant, cInfo(', size'), argv.s);
   var retina = argv.r === undefined ? true : argv.r === 'false' ? false : true;
-  var variants = argv.variant === undefined ? getFolders('src/variants/') : [argv.variant];
+  var variants =
+    argv.variant === undefined ? getFolders('src/variants/') : [argv.variant];
 
   for (var i = 0, vl = variants.length; i < vl; i++) {
     var variant = variants[i];
@@ -196,96 +177,105 @@ gulp.task('makesprites', async function() {
 
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
 // builds the src files into the dev folder. Concats JS and css
-gulp.task('build', gulp.series('clean', 'lint', function() {
-  console.log(cTask('Building Banners...'));
+gulp.task(
+  'build',
+  gulp.series('clean', function () {
+    console.log(cTask('Building Banners...'));
 
-  var variants = getFolders('src/variants/');
-  var fullmerge = merge();
+    var variants = getFolders('src/variants/');
+    var fullmerge = merge();
 
-  for (var i = 0, vl = variants.length; i < vl; i++) {
-    var variant = variants[i];
-    var sizes = getFolders('src/variants/' + variant);
+    for (var i = 0, vl = variants.length; i < vl; i++) {
+      var variant = variants[i];
+      var sizes = getFolders('src/variants/' + variant);
 
-    for (var j = 0, sl = sizes.length; j < sl; j++) {
-      var size = sizes[j];
-      var variantFolder = 'src/variants/' + variant + '/';
-      var sizeFolder = variantFolder + size + '/';
-      var dest = 'dev/' + variant + '/' + size + '/';
-      var merged = merge();
+      for (var j = 0, sl = sizes.length; j < sl; j++) {
+        var size = sizes[j];
+        var variantFolder = 'src/variants/' + variant + '/';
+        var sizeFolder = variantFolder + size + '/';
+        var dest = 'dev/' + variant + '/' + size + '/';
+        var merged = merge();
 
-      // move images
-      gulp
-        .src([
-          'src/global/assets/**',
-          sizeFolder + 'assets/**',
-          '!' + sizeFolder + 'assets/sprites/',
-          '!' + sizeFolder + 'assets/sprites/**'
-        ])
-        .pipe(gulp.dest(dest + 'assets/'));
+        // move images
+        gulp
+          .src([
+            'src/global/assets/**',
+            sizeFolder + 'assets/**',
+            '!' + sizeFolder + 'assets/sprites/',
+            '!' + sizeFolder + 'assets/sprites/**',
+          ])
+          .pipe(gulp.dest(dest + 'assets/'));
 
-      // move over any manifest.js files for FlashTalking ads to the root of each banner next to index.html
-      gulp.src([sizeFolder + 'manifest.js'], { allowEmpty: true }).pipe(gulp.dest(dest));
+        // move over any manifest.js files for FlashTalking ads to the root of each banner next to index.html
+        gulp
+          .src([sizeFolder + 'manifest.js'], { allowEmpty: true })
+          .pipe(gulp.dest(dest));
 
-      // concat the styles
-      var styleStream = gulp
-        .src(['src/global/styles/*.css', variantFolder + '*.css', sizeFolder + '*.css'])
-        .pipe(concat('screen.css'))
-        .pipe(gulp.dest(dest));
-      merged.add(styleStream);
+        // concat the styles
+        var styleStream = gulp
+          .src([
+            'src/global/styles/*.css',
+            variantFolder + '*.css',
+            sizeFolder + '*.css',
+          ])
+          .pipe(concat('screen.css'))
+          .pipe(gulp.dest(dest));
+        merged.add(styleStream);
 
-      // concat the javascript
-      var scriptStream = gulp
-        .src([
-          'src/global/scripts/**/*.js',
-          variantFolder + '*.js',
-          sizeFolder + '*.js',
-          '!' + sizeFolder + 'manifest.js'
-        ])
-        .pipe(concat('scripts.min.js'))
-        .pipe(gulp.dest(dest));
-      merged.add(scriptStream);
+        // concat the javascript
+        var scriptStream = gulp
+          .src([
+            'src/global/scripts/**/*.js',
+            variantFolder + '*.js',
+            sizeFolder + '*.js',
+            '!' + sizeFolder + 'manifest.js',
+          ])
+          .pipe(concat('scripts.min.js'))
+          .pipe(gulp.dest(dest));
+        merged.add(scriptStream);
 
-      // inject the style and JS as well as meta info
-      var injectStream = gulp
-        .src(sizeFolder + '*.html')
-        .pipe(inject(merged, { ignorePath: dest, addRootSlash: false }))
-        .pipe(replace('{{author}}', pkg.author))
-        .pipe(replace('{{description}}', pkg.description))
-        .pipe(replace('{{version}}', pkg.version))
-        .pipe(
-          replace(
-            '{{title}}',
-            pkg.meta.client +
-              ' ' +
-              pkg.meta.campaign +
-              ' | ' +
-              variant +
-              ' | ' +
-              size +
-              ' | ' +
-              pkg.version
+        // inject the style and JS as well as meta info
+        var injectStream = gulp
+          .src(sizeFolder + '*.html')
+          .pipe(inject(merged, { ignorePath: dest, addRootSlash: false }))
+          .pipe(replace('{{author}}', pkg.author))
+          .pipe(replace('{{description}}', pkg.description))
+          .pipe(replace('{{version}}', pkg.version))
+          .pipe(
+            replace(
+              '{{title}}',
+              pkg.meta.client +
+                ' ' +
+                pkg.meta.campaign +
+                ' | ' +
+                variant +
+                ' | ' +
+                size +
+                ' | ' +
+                pkg.version,
+            ),
           )
-        )
-        .pipe(replace('{{width}}', size.substring(0, size.indexOf('x'))))
-        .pipe(
-          replace(
-            '{{height}}',
-            size.substring(size.indexOf('x') + 1, size.length)
+          .pipe(replace('{{width}}', size.substring(0, size.indexOf('x'))))
+          .pipe(
+            replace(
+              '{{height}}',
+              size.substring(size.indexOf('x') + 1, size.length),
+            ),
           )
-        )
-        .pipe(gulp.dest(dest))
-        .pipe(wait(100)); // insert a slight pause so the file system can write successfully before we zip if this task is part of the zip chain
+          .pipe(gulp.dest(dest))
+          .pipe(wait(100)); // insert a slight pause so the file system can write successfully before we zip if this task is part of the zip chain
 
-      fullmerge.add(injectStream);
+        fullmerge.add(injectStream);
+      }
     }
-  }
 
-  return fullmerge;
-}));
+    return fullmerge;
+  }),
+);
 
 // take the src folder, iterate over the structure to two depths assuming: first level = variants, second level = sizes.
 // create zips per size for each variant and place in the dist folder
-function archive (done) {
+function archive(done) {
   console.log(cTask('Zipping Banners'));
   const gulpZip = require('gulp-zip'); // zip files
   // var date = new Date().toISOString().replace(/[^0-9]/g, '');
@@ -318,7 +308,7 @@ function archive (done) {
         return gulp
           .src(folder + '**/*')
           .pipe(gulpZip(filename))
-          .pipe(filesize({title: '...compressed size'}))
+          .pipe(filesize({ title: '...compressed size' }))
           .pipe(gulp.dest('dist'));
       };
 
@@ -339,5 +329,9 @@ function archive (done) {
   Clean/build first, then serve and watch
   @usage gulp serve
 **/
-gulp.task('serve', gulp.series('build', gulp.parallel(watchFiles, browserSync)), console.log(cTask('BrowserSync Watch DEV MODE')));
+gulp.task(
+  'serve',
+  gulp.series('build', gulp.parallel(watchFiles, browserSync)),
+  console.log(cTask('BrowserSync Watch DEV MODE')),
+);
 gulp.task('zip', gulp.series('build', archive));

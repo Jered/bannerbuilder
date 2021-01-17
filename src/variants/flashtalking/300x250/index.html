@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html>
-<!--
+  <!--
  * @Author: {{author}}
  * @Description: {{description}}
  * @Version: {{version}}
 -->
-<head>
-  <title>{{title}}</title>
-  <meta charset='UTF-8'>
-  <meta name='ad.size' content='width={{width}},height={{height}}'>
-  <script src='https://cdn.flashtalking.com/frameworks/js/gsap/latest/TweenMax.min.js'></script>
-  <!-- inject:css -->
-  <!-- endinject -->
-</head>
+  <head>
+    <title>{{title}}</title>
+    <meta charset="UTF-8" />
+    <meta name="ad.size" content="width={{width}},height={{height}}" />
+    <script src="https://cdn.flashtalking.com/frameworks/js/gsap/latest/gsap.min.js"></script>
+    <!-- inject:css -->
+    <!-- endinject -->
+  </head>
 
-<body>
-  <div id='banner'>
-    <hr id='rule' class='center'/>
-    <img id='txt1' class='icon-txt1 center' src='assets/bit.gif'/>
-    <img id='txt2' class='icon-txt2 center' src='assets/bit.gif'/>
-    <img id='cta' class='icon-cta center' src='assets/bit.gif'/>
-  </div>
-  <!-- inject:js -->
-  <!-- endinject -->
-  <!-- flashtalking specific, use standard template if not doing flashtalking -->
-  <script src="http://cdn.flashtalking.com/frameworks/js/api/2/9/html5API.js"></script>
-  <script type="text/javascript">
-  // If true, start function. If false, listen for INIT.
-    var myFT = new FT,
-    container = FT.query("#banner");
-    myFT.applyClickTag(container, 1);
-  </script>
-  <!-- end flashtalking -->
-</body>
+  <body>
+    <div id="banner">
+      <hr id="rule" class="center" />
+      <img id="txt1" class="retina icon-txt1 center" src="assets/bit.gif" />
+      <img id="txt2" class="retina icon-txt2 center" src="assets/bit.gif" />
+      <img id="cta" class="retina icon-cta center" src="assets/bit.gif" />
+    </div>
+    <!-- inject:js -->
+    <!-- endinject -->
+    <!-- flashtalking specific, use standard template if not doing flashtalking -->
+    <script src="http://cdn.flashtalking.com/frameworks/js/api/2/9/html5API.js"></script>
+    <script type="text/javascript">
+      // If true, start function. If false, listen for INIT.
+      var myFT = new FT(),
+        container = FT.query('#banner');
+      myFT.applyClickTag(container, 1);
+    </script>
+    <!-- end flashtalking -->
+  </body>
 </html>

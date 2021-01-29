@@ -157,7 +157,7 @@ gulp.task('clean', function () {
 gulp.task('makesprites', async function () {
   console.log(cTask('Making sprite sheets...'));
   console.log(cInfo('variant'), argv.variant, cInfo(', size'), argv.s);
-  var retina = argv.r === undefined ? true : argv.r === 'false' ? false : true;
+  var retina = argv.r === undefined ? false : argv.r === 'false' ? false : true;
   var variants =
     argv.variant === undefined ? getFolders('src/variants/') : [argv.variant];
 

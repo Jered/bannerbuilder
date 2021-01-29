@@ -1,7 +1,14 @@
+/* CSS Variables */
+:root {
+  --ad-width: 300px;
+  --ad-height: 250px;
+}
+
 #banner {
-  background: url('assets/background.png') no-repeat 0 0;
-  width: 300px;
-  height: 250px;
+  background: url('assets/background.png') no-repeat;
+  background-size: cover;
+  width: var(--ad-width);
+  height: var(--ad-height);
 }
 
 #logo {

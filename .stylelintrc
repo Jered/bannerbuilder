@@ -1,7 +1,15 @@
 {
+  "plugins": [
+    "stylelint-no-unsupported-browser-features"
+  ],
   "extends": [
     "stylelint-config-standard",
     "stylelint-config-concentric-order",
     "stylelint-config-prettier"
-  ]
+  ],
+  "rules": {
+    "plugin/no-unsupported-browser-features": [true, {
+      "severity": "warning"
+    }]
+  }
 }

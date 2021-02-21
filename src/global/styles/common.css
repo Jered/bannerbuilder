@@ -13,9 +13,11 @@ img {
 }
 
 .vcenter {
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+  display: block;
+  top: 0;
+  bottom: 0;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 body {

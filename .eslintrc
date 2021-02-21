@@ -7,7 +7,12 @@
   "parserOptions": {
     "ecmaVersion": 2017
   },
-  "extends": ["eslint:recommended", "prettier", "plugin:prettier/recommended"],
+  "extends": [
+    "plugin:compat/recommended",
+    "eslint:recommended",
+    "prettier",
+    "plugin:prettier/recommended"
+  ],
   "plugins": ["prettier"],
   "globals": {
     "Ad": true,

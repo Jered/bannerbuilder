@@ -132,9 +132,10 @@ function makesprite(variant, size, retina) {
 }
 
 // just consoles out the pkg.version
-gulp.task('default', function () {
+gulp.task('default', function (done) {
   // place code for your default task here
   console.info(cInfo('version: '), pkg.version);
+  done();
 });
 
 // Cleans the dist and dev folders

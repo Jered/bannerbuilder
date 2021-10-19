@@ -1,7 +1,19 @@
 /* common styles */
 img {
+  position: absolute; /* position images absolutely by default */
   margin: 0;
   border: none;
+}
+
+/* Deal with retina only sprites */
+img.retina {
+  transform: scale(0.5);
+  transform-origin: top left;
+}
+
+/* make sure to reset the origin when centering images */
+img.retina.center {
+  transform-origin: unset;
 }
 
 .center {
@@ -27,13 +39,16 @@ body {
   color: #fff;
 }
 
+/* position divs absolutely by default */
+div {
+  position: absolute;
+}
+
 #banner {
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box; /* Firefox, other Gecko */
   box-sizing: border-box; /* Opera/IE 8+ */
-  position: absolute;
   opacity: 0; /* start with a zero opacity for loading */
-  border: #000 1px solid;
   background: #fff;
   overflow: hidden;
 }
@@ -42,15 +57,9 @@ body {
   cursor: pointer;
 }
 
-/* Deal with retina only sprites */
-img.retina {
-  transform: scale(0.5);
-  transform-origin: top left;
-}
-
-/* make sure to reset the origin when centering images */
-img.retina.center {
-  transform-origin: unset;
+#border {
+  outline: #000 1px solid;
+  outline-offset: -1px;
 }
 
 /* end common styles */
